@@ -19,19 +19,20 @@ SymTable_T SymTable_new(void);
 
 /*--------------------------------------------------------------------*/
 
-/* frees the memory occupied by oSymTable */
+/* frees the memory occupied by oSymTable and returns if it was 
+   successful or not */
 void SymTable_free(SymTable_T oSymTable);
 
 /*--------------------------------------------------------------------*/
 
-/* retunrs the length of oSymTable */
+/* returns the length of oSymTable */
 size_t SymTable_getLength(SymTable_T oSymTable);
 
 /*--------------------------------------------------------------------*/
 
 /* first searches oSymTable and inserts the key pcKey with a value 
-   pvValue if the key is not already in oSymTable. otherwise does 
-   nothing */
+   pvValue if the key is not already in oSymTable. otherwise it returns
+   the value at the key*/
 int SymTable_put(SymTable_T oSymTable, 
     const char *pcKey, const void *pvValue);
 
@@ -44,7 +45,8 @@ void *SymTable_replace(SymTable_T oSymTable,
 
 /*--------------------------------------------------------------------*/
 
-/* checks oSymTable to see if there is an entry with the key pcKey */
+/* checks oSymTable to see if there is an entry with the key pcKey and
+   returns 1 if found and 0 if not */
 int SymTable_contains(SymTable_T oSymTable, const char *pcKey);
 
 /*--------------------------------------------------------------------*/

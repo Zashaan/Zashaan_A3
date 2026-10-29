@@ -94,7 +94,7 @@ static void SymTable_resize(SymTable_T oSymTable) {
     }
 
     /* check if the max is already reached */
-    if (bucketSizes[i] == 65521) return;
+    if (i + 1 == sizeNumber) return;
 
     /* assigns the new count for buckets */
     newBucketCount = bucketSizes[i];
