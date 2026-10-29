@@ -100,7 +100,7 @@ static void SymTable_resize(SymTable_T oSymTable) {
     newBucketCount = bucketSizes[i];
 
     /* give memory to the new buckets array */
-    newBuckets = calloc(newBucketCount, sizeof(*newBuckets))
+    newBuckets = calloc(newBucketCount, sizeof(*newBuckets));
 
     /* check if actually assigned */
     if (newBuckets == NULL) return;
@@ -281,6 +281,11 @@ int SymTable_put(SymTable_T oSymTable,
 
     /* updates the length */
     oSymTable->length++;
+
+    /* resizes the table if needed */
+    if (oSymTable->length > oSymTable->numBuckets) {
+        SymTable_resize(oSymTable);
+    }
 
     /* returns 1 to say that it has been added */
     return 1;
