@@ -235,7 +235,7 @@ void *SymTable_remove(SymTable_T oSymTable, const char *pcKey) {
     struct Binding *previousBinding;
     struct Binding *currentBinding;
     char *currentKey;
-    void *currentBindingValue;
+    const void *currentBindingValue;
 
     /* assert that the table and the key is not null */
     assert(oSymTable != NULL);
