@@ -158,7 +158,7 @@ void *SymTable_replace(SymTable_T oSymTable,
     while (currentBinding != NULL) {
         currentKey = currentBinding->key;
         if (strcmp(currentKey, pcKey) == 0) {
-            void *currentValue = currentBinding->value;
+            const void *currentValue = currentBinding->value;
             currentBinding->value = pvValue;
             return (void *)currentValue;
         }
@@ -235,13 +235,19 @@ void *SymTable_remove(SymTable_T oSymTable, const char *pcKey) {
     struct Binding *previousBinding;
     struct Binding *currentBinding;
     char *currentKey;
+    void *currentBindingValue;
 
     /* assert that the table and the key is not null */
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
 
-    /* assigns the current binding */
+    /* assigns the previous binding */
     previousBinding = oSymTable->first;
+
+    /* check to see table is not empty */
+    if (previousBinding == NULL) return NULL;
+
+    /* assigns current binding if table not empty */
     currentBinding = previousBinding->next;
 
     /* assigns the correct value for current key */
@@ -250,10 +256,11 @@ void *SymTable_remove(SymTable_T oSymTable, const char *pcKey) {
     /* handles the case where the first element is removed */
     if (strcmp(currentKey, pcKey) == 0) {
         oSymTable->first = currentBinding;
-        void *previousBindingValue = previousBinding->value;
+        currentBindingValue = previousBinding->value;
         free(previousBinding->key);
         free(previousBinding);
-        return previousBindingValue;
+        oSymTable->length--;
+        return (void *)currentBindingValue;
     }
 
     /* loops through oSymTable to find the key and remove it */
@@ -261,10 +268,11 @@ void *SymTable_remove(SymTable_T oSymTable, const char *pcKey) {
         currentKey = currentBinding->key;
         if (strcmp(currentKey, pcKey) == 0) {
             previousBinding->next = currentBinding->next;
-            void *currentBindingValue = currentBinding->value;
+            currentBindingValue = currentBinding->value;
             free(currentBinding->key);
             free(currentBinding);
-            return currentBindingValue;
+            oSymTable->length--;
+            return (void *)currentBindingValue;
         }
 
         previousBinding = currentBinding;
