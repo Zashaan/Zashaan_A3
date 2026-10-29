@@ -27,7 +27,7 @@ SymTable_T SymTable_new(void) {
 
     /* create the table and allocate memory to it*/
     SymTable_T newTable;
-    newTable = malloc(sizeOf(*newTable));
+    newTable = malloc(sizeof(*newTable));
 
     /* if no memory is allocated then return null */
     if (newTable == NULL) return NULL;
@@ -61,6 +61,9 @@ void SymTable_free(SymTable_T oSymTable) {
         free(currentBinding);
         currentBinding = nextBinding;
     }
+
+    /* frees the table itself */
+    free(oSymTable);
 }
 
 /*--------------------------------------------------------------------*/
@@ -113,7 +116,7 @@ int SymTable_put(SymTable_T oSymTable,
 
         /* check if actually assigned or free memory and return 0 */
         if (currentKey == NULL) {
-            free(currentBinding);
+            free(newBinding);
             return 0;
         }
 
@@ -157,7 +160,7 @@ void *SymTable_replace(SymTable_T oSymTable,
         if (strcmp(currentKey, pcKey) == 0) {
             size_t currentValue = currentBinding->value;
             currentBinding->value = pvValue;
-            return currentValue;
+            return (void *)currentValue;
         }
 
         currentBinding = currentBinding->next;
@@ -214,7 +217,7 @@ void *SymTable_get(SymTable_T oSymTable, const char *pcKey) {
     while (currentBinding != NULL) {
         currentKey = currentBinding->key;
         if (strcmp(currentKey, pcKey) == 0) {
-            return currentBinding->value;
+            return (void *)currentBinding->value;
         }
 
         currentBinding = currentBinding->next;
