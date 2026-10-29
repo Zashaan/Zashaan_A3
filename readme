@@ -61,8 +61,8 @@ thinking, but it helped me learn a lot.
 will help your grader to grade it in the most favorable light? In
 particular, what bugs are in your submission?
 
-I was a bit confused abou the whole magic number thing in the hash 
-function, so I put a comment there explaining why I had to use it.
+I was a bit confused about the whole magic number thing in the hash 
+function, so I made it a const size_t.
 
 ------------------------------------------------------------------------
 What warnings does splint generate on symtablelist.c, and what are your
@@ -95,6 +95,20 @@ your disagreement after each warning. If there are no warnings, then
 write "None."
 
 
+symtablehash.c: line 227: medium priority:
+Do you want to validate 'pvValue' through an assert?
+
+pvValue is allowed to be null, so there is not reason to assert.
+
+symtablehash.c: line 298: medium priority:
+Do you want to validate 'pvValue' through an assert?
+
+pvValue is allowed to be null, so there is not reason to assert.
+
+symtablehash.c: line 466: medium priority:
+Do you want to validate 'pvExtra' through an assert?
+
+pvValue is allowed to be null, so there is not reason to assert.
 
 ------------------------------------------------------------------------
 What are the CPU times reported by testsymtable.c with binding counts

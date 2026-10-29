@@ -145,6 +145,9 @@ static void SymTable_resize(SymTable_T oSymTable) {
 /* hash table implementation for creating a new SymTable_T */
 SymTable_T SymTable_new(void) {
 
+    /* create a constant with the initial number of buckets */
+    const size_t initialBuckets = 509;
+
     /* create the table and allocate memory to it*/
     SymTable_T newTable;
     newTable = malloc(sizeof(*newTable));
@@ -153,7 +156,8 @@ SymTable_T SymTable_new(void) {
     if (newTable == NULL) return NULL;
     
     /* give memory to the bucket array */
-    newTable->buckets = calloc(509, sizeof(*newTable->buckets));
+    newTable->buckets = calloc(initialBuckets, 
+        sizeof(*newTable->buckets));
 
     /* check if memory given to bucket array */
     if (newTable->buckets == NULL) {
@@ -162,7 +166,7 @@ SymTable_T SymTable_new(void) {
     }
     
     /* set values for the numBuckets and length variables */
-    newTable->numBuckets = 509;
+    newTable->numBuckets = initialBuckets;
     newTable->length = 0;
 
     /* returns the new table */
