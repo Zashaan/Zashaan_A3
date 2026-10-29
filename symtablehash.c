@@ -14,7 +14,6 @@
    key and value pair in each binding with a pointer to the next binding
    as well */
 struct Binding {
-
     /* creates the variable that stores the pointer to the key */
     char *key;
 
@@ -24,11 +23,9 @@ struct Binding {
     /* creates the variable for the pointer to the next binding */
     struct Binding *next;
 };
-
 /* creates the struct SymTable that has the actual table, its number of
    buckets, length, and also all of the buckets */
 struct SymTable {
-
     /* variable to store the array of all the buckets */
     struct Binding **buckets;
 
@@ -499,5 +496,4 @@ void SymTable_map(SymTable_T oSymTable,
         bucketNumber++;
     }  
 }
-
 /*--------------------------------------------------------------------*/
