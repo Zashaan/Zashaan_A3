@@ -13,7 +13,7 @@
 /* creates the binding and struct code */
 struct Binding {
     char *key;
-    size_t value;
+    const void *value;
     struct Binding *next;
 };
 struct SymTable {
@@ -156,7 +156,7 @@ void *SymTable_replace(SymTable_T oSymTable,
         currentKey = currentBinding->key;
         if (strcmp(currentKey, pcKey) == 0) {
             size_t currentValue = currentBinding->value;
-            currentBinding->value = *pvValue;
+            currentBinding->value = pvValue;
             return currentValue;
         }
 
