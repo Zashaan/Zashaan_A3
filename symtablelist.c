@@ -14,7 +14,7 @@
    key and value pair in each binding with a pointer to the next binding
    as well */
 struct Binding {
-    
+
     /* creates the variable that stores the pointer to the key */
     char *key;
 
@@ -109,7 +109,6 @@ int SymTable_put(SymTable_T oSymTable,
         /* assert that the table, key, and value is not null */
         assert(oSymTable != NULL);
         assert(pcKey != NULL);
-        assert(pvValue != NULL);
 
         /* assigns the current binding */
         currentBinding = oSymTable->first;
@@ -171,8 +170,6 @@ void *SymTable_replace(SymTable_T oSymTable,
     /* assert that the table, key, and value is not null */
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
-    assert(pvValue != NULL);
-
 
     /* assigns the current binding */
     currentBinding = oSymTable->first;

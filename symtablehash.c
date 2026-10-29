@@ -94,7 +94,7 @@ static void SymTable_resize(SymTable_T oSymTable) {
     if (i + 1 == sizeNumber) return;
 
     /* assigns the new count for buckets */
-    newBucketCount = bucketSizes[i];
+    newBucketCount = bucketSizes[i + 1];
 
     /* give memory to the new buckets array */
     newBuckets = calloc(newBucketCount, sizeof(*newBuckets));
