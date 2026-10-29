@@ -320,8 +320,7 @@ void SymTable_map(SymTable_T oSymTable,
     /* assert that the table, key, and pvExtra is not null */
     assert(oSymTable != NULL);
     assert(pfApply != NULL);
-    assert(pvExtra != NULL);
-
+    
     /* sets the value for current binding */
     currentBinding = oSymTable->first;
 
