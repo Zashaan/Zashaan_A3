@@ -158,7 +158,7 @@ void *SymTable_replace(SymTable_T oSymTable,
     while (currentBinding != NULL) {
         currentKey = currentBinding->key;
         if (strcmp(currentKey, pcKey) == 0) {
-            size_t currentValue = currentBinding->value;
+            void *currentValue = currentBinding->value;
             currentBinding->value = pvValue;
             return (void *)currentValue;
         }
@@ -250,7 +250,7 @@ void *SymTable_remove(SymTable_T oSymTable, const char *pcKey) {
     /* handles the case where the first element is removed */
     if (strcmp(currentKey, pcKey) == 0) {
         oSymTable->first = currentBinding;
-        size_t previousBindingValue = previousBinding->value;
+        void *previousBindingValue = previousBinding->value;
         free(previousBinding->key);
         free(previousBinding);
         return previousBindingValue;
@@ -261,7 +261,7 @@ void *SymTable_remove(SymTable_T oSymTable, const char *pcKey) {
         currentKey = currentBinding->key;
         if (strcmp(currentKey, pcKey) == 0) {
             previousBinding->next = currentBinding->next;
-            size_t currentBindingValue = currentBinding->value;
+            void *currentBindingValue = currentBinding->value;
             free(currentBinding->key);
             free(currentBinding);
             return currentBindingValue;
