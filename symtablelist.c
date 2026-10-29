@@ -10,12 +10,19 @@
 /* the code below is the linked list implementation for the SymTable  */
 /*--------------------------------------------------------------------*/
 
-/* creates the binding and struct code */
+/* creates the struct binding that will be used to actually store each 
+   key and value pair in each binding with a pointer to the next binding
+   as well */
 struct Binding {
+    /* creates the variable that stores the pointer to the key */
     char *key;
+    /* creates the variable with a pointer to the value */
     const void *value;
+    /* creates the variable for the pointer to the next binding */
     struct Binding *next;
 };
+
+/* creates the struct SymTable */
 struct SymTable {
     struct Binding *first;
     size_t length;
@@ -87,9 +94,10 @@ int SymTable_put(SymTable_T oSymTable,
         struct Binding *newBinding;
         char *currentKey;
 
-        /* assert that the table and the key is not null */
+        /* assert that the table, key, and value is not null */
         assert(oSymTable != NULL);
         assert(pcKey != NULL);
+        assert(pvValue != NULL);
 
         /* assigns the current binding */
         currentBinding = oSymTable->first;
@@ -147,9 +155,11 @@ void *SymTable_replace(SymTable_T oSymTable,
     struct Binding *currentBinding;
     char *currentKey;
 
-    /* assert that the table and the key is not null */
+    /* assert that the table, key, and value is not null */
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
+    assert(pvValue != NULL);
+
 
     /* assigns the current binding */
     currentBinding = oSymTable->first;
@@ -168,7 +178,7 @@ void *SymTable_replace(SymTable_T oSymTable,
 
     /* if been through the table and key not found return NULL */
     return NULL;
-     }
+    }
 
 /*--------------------------------------------------------------------*/
 
@@ -288,12 +298,14 @@ void *SymTable_remove(SymTable_T oSymTable, const char *pcKey) {
 void SymTable_map(SymTable_T oSymTable, 
     void (*pfApply)(const char *pcKey, void *pvValue, void *pvExtra),
     const void *pvExtra) {
+
     /* creates the variables needed to go through the loop */
     struct Binding *currentBinding;
 
-    /* assert that the table and the key is not null */
+    /* assert that the table, key, and pvExtra is not null */
     assert(oSymTable != NULL);
     assert(pfApply != NULL);
+    assert(pvExtra != NULL);
 
     /* sets the value for current binding */
     currentBinding = oSymTable->first;

@@ -24,36 +24,41 @@ void SymTable_free(SymTable_T oSymTable);
 
 /*--------------------------------------------------------------------*/
 
-/* retunrs the length of the SymTable */
+/* retunrs the length of oSymTable */
 size_t SymTable_getLength(SymTable_T oSymTable);
 
 /*--------------------------------------------------------------------*/
 
-/* */
+/* first searches oSymTable and inserts the key pcKey with a value 
+   pvValue if the key is not already in oSymTable. otherwise does 
+   nothing */
 int SymTable_put(SymTable_T oSymTable, 
     const char *pcKey, const void *pvValue);
 
 /*--------------------------------------------------------------------*/
 
-
+/* searches oSymTable for the key pcKey and replaces the existing value with pvValue FINISH THIS.        */
 void *SymTable_replace(SymTable_T oSymTable,
      const char *pcKey, const void *pvValue);
 
 /*--------------------------------------------------------------------*/
 
-
+/* */
 int SymTable_contains(SymTable_T oSymTable, const char *pcKey);
 
 /*--------------------------------------------------------------------*/
 
+/* */
 void *SymTable_get(SymTable_T oSymTable, const char *pcKey);
 
 /*--------------------------------------------------------------------*/
 
+/* */
 void *SymTable_remove(SymTable_T oSymTable, const char *pcKey);
 
 /*--------------------------------------------------------------------*/
 
+/* */
 void SymTable_map(SymTable_T oSymTable, 
     void (*pfApply)(const char *pcKey, void *pvValue, void *pvExtra),
     const void *pvExtra);
