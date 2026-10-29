@@ -37,28 +37,32 @@ int SymTable_put(SymTable_T oSymTable,
 
 /*--------------------------------------------------------------------*/
 
-/* searches oSymTable for the key pcKey and replaces the existing value with pvValue FINISH THIS.        */
+/* searches oSymTable for the key pcKey and replaces the existing value
+   with pvValue */
 void *SymTable_replace(SymTable_T oSymTable,
      const char *pcKey, const void *pvValue);
 
 /*--------------------------------------------------------------------*/
 
-/* */
+/* checks oSymTable to see if there is an entry with the key pcKey */
 int SymTable_contains(SymTable_T oSymTable, const char *pcKey);
 
 /*--------------------------------------------------------------------*/
 
-/* */
+/* searches oSymTable to see if there is a key pcKey and if there is it
+   returns its value */
 void *SymTable_get(SymTable_T oSymTable, const char *pcKey);
 
 /*--------------------------------------------------------------------*/
 
-/* */
+/* searches oSymTable for an entry with key pcKey and if there is it 
+   removes it */
 void *SymTable_remove(SymTable_T oSymTable, const char *pcKey);
 
 /*--------------------------------------------------------------------*/
 
-/* */
+/* goes through oSymTable and applies the pfApply function to all the 
+   bindings and passes pvExtra as another parameter */
 void SymTable_map(SymTable_T oSymTable, 
     void (*pfApply)(const char *pcKey, void *pvValue, void *pvExtra),
     const void *pvExtra);

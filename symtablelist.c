@@ -14,22 +14,31 @@
    key and value pair in each binding with a pointer to the next binding
    as well */
 struct Binding {
+    
     /* creates the variable that stores the pointer to the key */
     char *key;
+
     /* creates the variable with a pointer to the value */
     const void *value;
+
     /* creates the variable for the pointer to the next binding */
     struct Binding *next;
 };
 
-/* creates the struct SymTable */
+/* creates the struct SymTable that keeps track of the first binding and 
+   has the length of the table */
 struct SymTable {
+
+    /* variable that stores the pointer to the first binding */
     struct Binding *first;
+
+    /* variable to store the length of the table */
     size_t length;
 };
 
 /*--------------------------------------------------------------------*/
 
+/* linked list implementation for creating a new SymTable_T */
 SymTable_T SymTable_new(void) {
 
     /* create the table and allocate memory to it*/
@@ -49,6 +58,7 @@ SymTable_T SymTable_new(void) {
 
 /*--------------------------------------------------------------------*/
 
+/* linked list implementation for freeing the table */
 void SymTable_free(SymTable_T oSymTable) {
 
     /* creates the variables needed to go through the loop */
@@ -75,6 +85,7 @@ void SymTable_free(SymTable_T oSymTable) {
 
 /*--------------------------------------------------------------------*/
 
+/* linked list implementation for getting the length of the table */
 size_t SymTable_getLength(SymTable_T oSymTable) {
 
     /* assert that oSymTable is not empty */
@@ -86,6 +97,7 @@ size_t SymTable_getLength(SymTable_T oSymTable) {
 
 /*--------------------------------------------------------------------*/
 
+/* linked list implementation for putting a pair in the table */
 int SymTable_put(SymTable_T oSymTable, 
     const char *pcKey, const void *pvValue) {
 
@@ -148,6 +160,7 @@ int SymTable_put(SymTable_T oSymTable,
 
 /*--------------------------------------------------------------------*/
 
+/* linked list implementation for replacing a pair in the table */
 void *SymTable_replace(SymTable_T oSymTable,
      const char *pcKey, const void *pvValue) {
 
@@ -182,6 +195,7 @@ void *SymTable_replace(SymTable_T oSymTable,
 
 /*--------------------------------------------------------------------*/
 
+/* linked list implementation for checking if the key is in the table */
 int SymTable_contains(SymTable_T oSymTable, const char *pcKey) {
 
     /* creates the variables needed to go through the loop */
@@ -210,6 +224,8 @@ int SymTable_contains(SymTable_T oSymTable, const char *pcKey) {
 
 /*--------------------------------------------------------------------*/
 
+/* linked list implementation for getting the value of the key in the 
+   table */
 void *SymTable_get(SymTable_T oSymTable, const char *pcKey) {
     
     /* creates the variables needed to go through the loop */
@@ -239,6 +255,7 @@ void *SymTable_get(SymTable_T oSymTable, const char *pcKey) {
 
 /*--------------------------------------------------------------------*/
 
+/* linked list implementation for removing a pair from the table */
 void *SymTable_remove(SymTable_T oSymTable, const char *pcKey) {
     
     /* creates the variables needed to go through the loop */
@@ -295,6 +312,7 @@ void *SymTable_remove(SymTable_T oSymTable, const char *pcKey) {
 
 /*--------------------------------------------------------------------*/
 
+/* linked list implementation for applying the function to the table */
 void SymTable_map(SymTable_T oSymTable, 
     void (*pfApply)(const char *pcKey, void *pvValue, void *pvExtra),
     const void *pvExtra) {

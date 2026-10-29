@@ -10,15 +10,32 @@
 /* the code below is the hash table implementation for the SymTable   */
 /*--------------------------------------------------------------------*/
 
-/* creates the binding and struct code */
+/* creates the struct binding that will be used to actually store each 
+   key and value pair in each binding with a pointer to the next binding
+   as well */
 struct Binding {
+
+    /* creates the variable that stores the pointer to the key */
     char *key;
+
+    /* creates the variable with a pointer to the value */
     const void *value;
+
+    /* creates the variable for the pointer to the next binding */
     struct Binding *next;
 };
+
+/* creates the struct SymTable that has the actual table, its number of
+   buckets, length, and also all of the buckets */
 struct SymTable {
+
+    /* variable to store the array of all the buckets */
     struct Binding **buckets;
+
+    /* variable to store how many buckets there are */
     size_t numBuckets;
+
+    /* variable to store the length of the table */
     size_t length;
 };
 
@@ -26,7 +43,6 @@ struct SymTable {
 
 /* Return a hash code for pcKey that is between 0 and uBucketCount-1,
    inclusive. */
-
 static size_t SymTable_hash(const char *pcKey, size_t uBucketCount)
 {
    const size_t HASH_MULTIPLIER = 65599;
@@ -44,26 +60,107 @@ static size_t SymTable_hash(const char *pcKey, size_t uBucketCount)
 /*--------------------------------------------------------------------*/
 
 /* checks the current length of oSymTable and resizes the table if 
-   needed else does nothing*/
+   needed else does nothing */
 static void SymTable_resize(SymTable_T oSymTable) {
+
+    /* creates the array to be used to look at sizes */
+    static const size_t bucketSizes[] = {509, 1021, 2039, 4093, 
+        8191, 16381, 32749, 65521};
+    
+    /* stores the array length */
+    const size_t sizeNumber = 
+        sizeof(bucketSizes) / sizeof(bucketSizes[0]);
+
+    /* variables to keep track of locations and counts */
+    size_t oldBucket;
+    size_t newBucket;
+    size_t newBucketCount;
+    size_t i;
+
+    /* creates the new bucket array and variables to populate */
+    struct Binding **newBuckets;
+    struct Binding *currentBinding;
+    struct Binding *nextBinding;
 
     /* assert that the table is not null */
     assert(oSymTable != NULL);
 
+    /* return if resizing is not needed */
+    if (oSymTable->length <= oSymTable->numBuckets) return;
 
+    /* find how many buckets there are right now */
+    for (i = 0; i < sizeNumber; i++) {
+        if (bucketSizes[i] == oSymTable->numBuckets) break;
+    }
+
+    /* check if the max is already reached */
+    if (bucketSizes[i] == 65521) return;
+
+    /* assigns the new count for buckets */
+    newBucketCount = bucketSizes[i];
+
+    /* give memory to the new buckets array */
+    newBuckets = calloc(newBucketCount, sizeof(*newBuckets))
+
+    /* check if actually assigned */
+    if (newBuckets == NULL) return;
+
+    /* loop through all the old buckets and copy each binding in 
+       newBuckets */
+    for (oldBucket = 0; oldBucket < oSymTable->numBuckets; 
+        oldBucket++) {
+
+            /* starts with the first binding in each bucket */
+            currentBinding = oSymTable->buckets[oldBucket];
+
+            /* loops through the bucket and moves the bindings */
+            while (currentBinding != NULL) {
+                /* store the next pointer */
+                nextBinding = currentBinding->next;
+
+                /* calculate which bucket it should go into */
+                newBucket = SymTable_hash(currentBinding->key, 
+                    newBucketCount);
+                
+                /* update the next for this binding and put it into the
+                   correct new bucket */
+                currentBinding->next = newBuckets[newBucket];
+                newBuckets[newBucket] = currentBinding;
+
+                /* go to the next binding in the bucket */
+                currentBinding = nextBinding;
+            }
+        };
+
+    /* free the old bucket array */
+    free(oSymTable->buckets);
+
+    /* update the table with the new buckets */
+    oSymTable->buckets = newBuckets;
+    oSymTable->numBuckets = newBucketCount;
 }
 
 /*--------------------------------------------------------------------*/
 
+/* hash table implementation for creating a new SymTable_T */
 SymTable_T SymTable_new(void) {
 
     /* create the table and allocate memory to it*/
     SymTable_T newTable;
-    newTable = calloc(509, sizeof(*newTable->buckets));
+    newTable = malloc(sizeof(*newTable));
 
     /* if no memory is allocated then return null */
     if (newTable == NULL) return NULL;
+    
+    /* give memory to the bucket array */
+    newTable->buckets = calloc(509, sizeof(*newTable->buckets));
 
+    /* check if memory given to bucket array */
+    if (newTable->buckets == NULL) {
+        free(newTable);
+        return NULL;
+    }
+    
     /* set values for the numBuckets and length variables */
     newTable->numBuckets = 509;
     newTable->length = 0;
@@ -74,6 +171,7 @@ SymTable_T SymTable_new(void) {
 
 /*--------------------------------------------------------------------*/
 
+/* hash table implementation for freeing the table */
 void SymTable_free(SymTable_T oSymTable) {
 
     /* creates the variables needed to go through the loop */
@@ -83,6 +181,9 @@ void SymTable_free(SymTable_T oSymTable) {
 
     /* assert that the table is not null */
     assert(oSymTable != NULL);
+
+    /* starts bucket number at 0 */
+    bucketNumber = 0;
 
     /* outer loop to go through each bucket */
     while (bucketNumber < oSymTable->numBuckets) {
@@ -102,12 +203,14 @@ void SymTable_free(SymTable_T oSymTable) {
         bucketNumber++;
     }
 
-    /* frees the table itself */
+    /* frees the bucket array and table itself */
+    free(oSymTable->buckets);
     free(oSymTable);
 }
 
 /*--------------------------------------------------------------------*/
 
+/* hash table implementation for getting the length of the table */
 size_t SymTable_getLength(SymTable_T oSymTable) {
 
     /* assert that oSymTable is not empty */
@@ -119,6 +222,7 @@ size_t SymTable_getLength(SymTable_T oSymTable) {
 
 /*--------------------------------------------------------------------*/
 
+/* hash table implementation for putting a pair in the table */
 int SymTable_put(SymTable_T oSymTable, 
     const char *pcKey, const void *pvValue) {
     
@@ -131,7 +235,6 @@ int SymTable_put(SymTable_T oSymTable,
     /* assert that the table, key, and value is not null */
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
-    assert(pvValue != NULL);
 
     /* calculates the bucket number for the key */
     bucketNumber = SymTable_hash(pcKey, oSymTable->numBuckets);
@@ -185,6 +288,7 @@ int SymTable_put(SymTable_T oSymTable,
 
 /*--------------------------------------------------------------------*/
 
+/* hash table implementation for replacing a pair in the table */
 void *SymTable_replace(SymTable_T oSymTable,
      const char *pcKey, const void *pvValue) {
     
@@ -222,6 +326,7 @@ void *SymTable_replace(SymTable_T oSymTable,
 
 /*--------------------------------------------------------------------*/
 
+/* hash table implementation for checking if the key is in the table */
 int SymTable_contains(SymTable_T oSymTable, const char *pcKey) {
 
     /* creates the variables needed to go through the loop */
@@ -254,6 +359,8 @@ int SymTable_contains(SymTable_T oSymTable, const char *pcKey) {
 
 /*--------------------------------------------------------------------*/
 
+/* hash table implementation for getting the value of the key in the 
+   table */
 void *SymTable_get(SymTable_T oSymTable, const char *pcKey) {
 
     /* creates the variables needed to go through the loop */
@@ -287,6 +394,7 @@ void *SymTable_get(SymTable_T oSymTable, const char *pcKey) {
 
 /*--------------------------------------------------------------------*/
 
+/* hash table implementation for removing a pair from the table */
 void *SymTable_remove(SymTable_T oSymTable, const char *pcKey) {
 
     /* creates the variables needed to go through the loop */
@@ -347,6 +455,7 @@ void *SymTable_remove(SymTable_T oSymTable, const char *pcKey) {
 
 /*--------------------------------------------------------------------*/
 
+/* hash table implementation for applying the function to the table */
 void SymTable_map(SymTable_T oSymTable, 
     void (*pfApply)(const char *pcKey, void *pvValue, void *pvExtra),
     const void *pvExtra) {
@@ -358,6 +467,9 @@ void SymTable_map(SymTable_T oSymTable,
     /* assert that the table and the key is not null */
     assert(oSymTable != NULL);
     assert(pfApply != NULL);
+
+    /* starts bucket number at 0 */
+    bucketNumber = 0;
 
     /* outer loop to go through each bucket */
     while (bucketNumber < oSymTable->numBuckets) {
